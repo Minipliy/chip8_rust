@@ -12,7 +12,7 @@ const START_ADDR: u16 = 0x200; //Starts at Bit 512, 0-511 are reserved for other
 const FONTSET_SIZE: usize = 80;
 
 const FONTSET: [u8; FONTSET_SIZE] = [
-    //Puts the chars 0-F in the free ram into index 0-79
+    // Puts the chars 0-F in the free ram into index 0-79
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
     0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -107,9 +107,9 @@ impl Emu {
     }
 
     pub fn tick(&mut self) {
-        //Fetch
+        // Fetch
         let op = self.fetch();
-        //Decode & execute TODO
+        // Decode & execute TODO
         self.execute(op);
     }
 
@@ -400,7 +400,7 @@ impl Emu {
     }
 
     fn fetch(&mut self) -> u16 {
-        // fetch the next 2 bits from ram and add them together
+        // Fetch the next 2 bits from ram and add them together
         let higher_byte = self.ram[self.pc as usize] as u16;
         let lower_byte = self.ram[(self.pc + 1) as usize] as u16;
         let op = (higher_byte << 8) | lower_byte;
