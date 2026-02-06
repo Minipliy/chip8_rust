@@ -83,4 +83,30 @@ impl Emu {
         self.st = 0;
         self.ram[..FONTSET_SIZE].copy_from_slice(&FONTSET);
     }
+
+    pub fn tick(&mut self) {
+        let op = self.fetch();
+        //Decode & execute TODO
+    }
+
+    fn fetch(&mut self) -> u16 {
+        let higher_byte = self.ram[self.pc as usize] as u16;
+        let lower_byte = self.ram[(self.pc + 1) as usize] as u16;
+        let op = (higher_byte << 8) | lower_byte;
+        self.pc += 2;
+        op
+    }
+
+    pub fn tick_timers(&mut self) {
+        if self.dt > 0 {
+            self.dt -= 1;
+        }
+
+        if self.st > 0 {
+            if self.st == 1 {
+                //BEEP-sound TODO
+            }
+            self.st -= 1;
+        }
+    }
 }
