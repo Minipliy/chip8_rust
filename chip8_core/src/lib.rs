@@ -69,4 +69,18 @@ impl Emu {
         self.sp -= 1;
         self.stack[self.sp as usize]
     }
+
+    pub fn reset(&mut self) {
+        self.pc = START_ADDR;
+        self.ram = [0; RAM_SIZE];
+        self.screen = [false; SCREEN_WIDTH * SCREEN_HEIGHT];
+        self.v_reg = [0; NUM_REGS];
+        self.i_reg = 0;
+        self.sp = 0;
+        self.stack = [0; STACK_SIZE];
+        self.keys = [false; NUM_KEYS];
+        self.dt = 0;
+        self.st = 0;
+        self.ram[..FONTSET_SIZE].copy_from_slice(&FONTSET);
+    }
 }
