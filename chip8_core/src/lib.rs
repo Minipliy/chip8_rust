@@ -65,6 +65,23 @@ impl Emu {
         new_emu
     }
 
+    pub fn get_display(&self) -> &[bool] {
+        &self.screen
+    }
+
+    pub fn keypresses(&mut self, idx: usize, pressed: bool) {
+        // idx needs to be under 16 or else
+        // the programm will panic
+        self.keys[idx] = pressed;
+    }
+
+    pub fn load(&mut self, data: &[u8]) {
+        let start = START_ADDR as usize; // Starts copying into ram on 0x200 because of 512
+                                         // reserved bits before (START_ADDR)
+        let end = (START_ADDR as usize) + data.len();
+        self.ram[start..end].copy_from_slice(data);
+    }
+
     fn push(&mut self, val: u16) {
         self.stack[self.sp as usize] = val;
         self.sp += 1;
