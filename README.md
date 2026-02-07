@@ -106,11 +106,10 @@ The emulator consists of:
 
 MIT License - feel free to use this project for learning and development.
 
-## Acknowledgments
+## Credits
 
-- Based on the CHIP-8 specification
-- Inspired by the retro computing community
-- Built with Rust and SDL2
+This project was built following the CHIP-8 tutorial by [[Author/Link](https://github.com/aquova)].
+The original tutorial code is licensed under CC0 1.0 Universal.
 
 ---
 
