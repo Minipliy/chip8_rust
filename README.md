@@ -108,7 +108,7 @@ MIT License - feel free to use this project for learning and development.
 
 ## Credits
 
-This project was built following the CHIP-8 tutorial by [aquova(https://github.com/aquova)].
+This project was built following the CHIP-8 tutorial by [aquova](https://github.com/aquova).
 The original tutorial code is licensed under CC0 1.0 Universal.
 
 ---
