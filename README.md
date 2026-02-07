@@ -67,8 +67,7 @@ Keyboard                    CHIP-8
 ## Finding ROMs
 
 You can find public domain CHIP-8 ROMs here:
-- [CHIP-8 Games Pack](https://www.zophar.net/pdroms/chip8.html)
-- [CHIP-8 Archive](https://johnearnest.github.io/chip8Archive/)
+- [CHIP-8 Games Pack](https://www.zophar.net/pdroms/chip8/chip-8-games-pack.html)
 
 ## Technical Details
 
