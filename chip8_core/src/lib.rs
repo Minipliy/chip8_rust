@@ -287,10 +287,10 @@ impl Emu {
                     for x_line in 0..8 {
                         if (pixels & (0b1000_0000 >> x_line)) != 0 {
                             let x = (x_coord + x_line) as usize % SCREEN_WIDTH;
-                            let y = (y_coord + y_line) as usize & SCREEN_HEIGHT;
+                            let y = (y_coord + y_line) as usize % SCREEN_HEIGHT;
 
                             let idx = x + SCREEN_WIDTH * y;
-                            flipped != self.screen[idx];
+                            flipped |= self.screen[idx];
                             self.screen[idx] ^= true;
                         }
                     }
