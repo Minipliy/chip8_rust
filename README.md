@@ -103,15 +103,6 @@ The emulator consists of:
 - **`desktop`**: SDL2-based frontend for native desktop execution
 - **`web`**: WebAssembly frontend for browser-based play
 
-## Roadmap
-
-- [x] Core CHIP-8 interpreter
-- [x] Desktop frontend with SDL2
-- [x] Keyboard input
-- [x] Display rendering
-- [x] WebAssembly web frontend
-- [ ] Update web version website
-- [ ] Sound support
 
 ## Resources
 
