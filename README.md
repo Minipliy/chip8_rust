@@ -110,7 +110,7 @@ The emulator consists of:
 - [x] Keyboard input
 - [x] Display rendering
 - [x] WebAssembly web frontend
-- [ ] Update the website
+- [ ] Update web version website
 - [ ] Sound support
 
 ## Resources
