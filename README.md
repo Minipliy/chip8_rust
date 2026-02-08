@@ -16,6 +16,7 @@ A CHIP-8 emulator written in Rust with multiple frontends: desktop application u
 
 - Rust (latest stable version)
 - SDL2 library
+- wasm-pack (for web version)
 
 #### Installing SDL2
 
@@ -32,6 +33,11 @@ sudo apt-get install libsdl2-dev
 **Windows:**
 Follow the [SDL2 installation guide](https://github.com/Rust-SDL2/rust-sdl2#windows-msvc)
 
+#### Installing wasm-pack
+```bash
+curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+```
+
 ### Desktop Version
 ```bash
 # Clone the repository
@@ -44,7 +50,17 @@ cargo run --release path/to/rom
 
 ### Web Version
 
-Coming soon!
+```bash
+# Build the WebAssembly package
+cd chip8_rust/wasm
+wasm-pack build --target web
+
+# Serve the web version locally
+cd ../website
+python3 -m http.server 8000
+
+# Open your browser to http://localhost:8000
+```
 
 ## Controls
 
@@ -62,7 +78,7 @@ Keyboard                    CHIP-8
 +---+---+---+---+           +---+---+---+---+
 ```
 
-**ESC** - Exit emulator
+**ESC** - Exit emulator (desktop)
 
 ## Finding ROMs
 
@@ -85,7 +101,7 @@ You can find public domain CHIP-8 ROMs here:
 The emulator consists of:
 - **`chip8_core`**: Platform-agnostic interpreter implementing the full CHIP-8 instruction set
 - **`desktop`**: SDL2-based frontend for native desktop execution
-- **`web`**: WebAssembly frontend for browser-based play (in development)
+- **`web`**: WebAssembly frontend for browser-based play
 
 ## Roadmap
 
@@ -93,7 +109,8 @@ The emulator consists of:
 - [x] Desktop frontend with SDL2
 - [x] Keyboard input
 - [x] Display rendering
-- [ ] WebAssembly web frontend
+- [x] WebAssembly web frontend
+- [ ] Update the website
 - [ ] Sound support
 
 ## Resources
