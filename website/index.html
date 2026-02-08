@@ -1,15 +1,94 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Chip-8 Emulator</title>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h1>My Chip-8 Emulator</h1>
-        <label for="fileinput">Upload a Chip-8 game: </label>
-        <input type="file" id="fileinput" autocomplete="off"/>
-        <br/>
-        <canvas id="canvas">If you see this message, than your browser doesn't support HTML5</canvas>
-    </body>
-    <script type="module" src="index.js"></script>
+
+<head>
+    <title>Chip-8 Emulator</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        select,
+        input[type="file"] {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        canvas {
+            display: block;
+            margin: 20px auto;
+            background: #000;
+            border: 2px solid #444;
+        }
+    </style>
+</head>
+
+<body>
+    <h1> Chip-8 Emulator</h1>
+
+    <div class="controls">
+        <div>
+            <label for="gameselect">Choose a game: </label>
+            <select id="gameselect">
+                <option value="">-- Select a game --</option>
+                <option value="c8games/15PUZZLE">15 Puzzle</option>
+                <option value="c8games/BRIX">Brix</option>
+                <option value="c8games/INVADERS">Space Invaders</option>
+                <option value="c8games/MERLIN">Merlin</option>
+                <option value="c8games/MISSILE">Missile</option>
+                <option value="c8games/PONG2">Pong</option>
+                <option value="c8games/TETRIS">Tetris</option>
+                <option value="c8games/TICTAC">Tic Tac Toe</option>
+                <option value="c8games/UFO">UFO</option>
+                <option value="c8games/VBRIX">VBrix</option>
+                <option value="c8games/VERS">Vers</option>
+                <option value="c8games/RPS.ch8">RPS</option>
+            </select>
+        </div>
+
+        <div id="gamedescription" style="
+    background:#222;
+    border:1px solid #444;
+    padding:15px;
+    border-radius:6px;
+    margin-top:10px;
+    white-space:pre-line;
+">
+            Select a game to see instructions.
+        </div>
+
+        <div>
+            <label for="fileinput">Upload CHIP-8 ROM: </label>
+            <input type="file" id="fileinput" accept=".ch8,.c8" autocomplete="off" />
+            <small style="display: block; color: #888; margin-top: 5px;">
+                Supported formats: .ch8, .c8 (CHIP-8 binary ROM files)
+            </small>
+        </div>
+    </div>
+
+    <canvas id="canvas">If you see this message, then your browser doesn't support HTML5</canvas>
+</body>
+<script type="module" src="index.js"></script>
+
 </html>
