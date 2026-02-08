@@ -108,6 +108,7 @@ fn main() {
             Keycode::D => Some(0x9),
             Keycode::F => Some(0xE),
             Keycode::Y => Some(0xA), // Layout for german keyboard (where the y key is in the bottom right rather than the z key)
+            Keycode::Z => Some(0xA), // Layout for english keyboard
             Keycode::X => Some(0x0),
             Keycode::C => Some(0xB),
             Keycode::V => Some(0xF),

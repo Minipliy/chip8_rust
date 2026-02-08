@@ -92,7 +92,8 @@ fn key_to_button(key: &str) -> Option<usize> {
         "s" => Some(0x8),
         "d" => Some(0x9),
         "f" => Some(0xE),
-        "y" => Some(0xA),
+        "y" => Some(0xA), // German keyboard layout
+        "z" => Some(0xA), // English keyboard layout
         "x" => Some(0x0),
         "c" => Some(0xB),
         "v" => Some(0xF),
