@@ -4,6 +4,7 @@
 <head>
     <title>Chip-8 Emulator</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,11 +42,64 @@
             background: #000;
             border: 2px solid #444;
         }
+
+        /* Mobile Keyboard Styles */
+        #mobile-keyboard {
+            display: none;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+        }
+
+        .keyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .key-btn {
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #3a3a3a;
+            color: #fff;
+            border: 2px solid #555;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.1s;
+        }
+
+        .key-btn:active,
+        .key-btn.pressed {
+            background: #4a9eff;
+            border-color: #2a7edf;
+            transform: scale(0.95);
+        }
+
+        .key-btn:hover {
+            background: #4a4a4a;
+        }
+
+        /* Show keyboard on mobile */
+        @media (max-width: 768px) {
+            #mobile-keyboard {
+                display: block;
+            }
+
+            canvas {
+                max-width: 100%;
+                height: auto;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <h1> Chip-8 Emulator</h1>
+    <h1>🎮 Chip-8 Emulator</h1>
 
     <div class="controls">
         <div>
@@ -68,13 +122,13 @@
         </div>
 
         <div id="gamedescription" style="
-    background:#222;
-    border:1px solid #444;
-    padding:15px;
-    border-radius:6px;
-    margin-top:10px;
-    white-space:pre-line;
-">
+            background:#222;
+            border:1px solid #444;
+            padding:15px;
+            border-radius:6px;
+            margin-top:10px;
+            white-space:pre-line;
+        ">
             Select a game to see instructions.
         </div>
 
@@ -88,6 +142,33 @@
     </div>
 
     <canvas id="canvas">If you see this message, then your browser doesn't support HTML5</canvas>
+
+    <!-- Mobile Touch Keyboard -->
+    <div id="mobile-keyboard">
+        <h3 style="text-align: center; margin-top: 0;">Touch Controls</h3>
+        <div class="keyboard-grid">
+            <button class="key-btn" data-key="1">1</button>
+            <button class="key-btn" data-key="2">2</button>
+            <button class="key-btn" data-key="3">3</button>
+            <button class="key-btn" data-key="c">C</button>
+
+            <button class="key-btn" data-key="4">4</button>
+            <button class="key-btn" data-key="5">5</button>
+            <button class="key-btn" data-key="6">6</button>
+            <button class="key-btn" data-key="d">D</button>
+
+            <button class="key-btn" data-key="7">7</button>
+            <button class="key-btn" data-key="8">8</button>
+            <button class="key-btn" data-key="9">9</button>
+            <button class="key-btn" data-key="e">E</button>
+
+            <button class="key-btn" data-key="a">A</button>
+            <button class="key-btn" data-key="0">0</button>
+            <button class="key-btn" data-key="b">B</button>
+            <button class="key-btn" data-key="f">F</button>
+        </div>
+    </div>
+
 </body>
 <script type="module" src="index.js"></script>
 
