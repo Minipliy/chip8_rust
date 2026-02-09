@@ -55,6 +55,9 @@ cargo run --release path/to/rom
 cd chip8_rust/wasm
 wasm-pack build --target web
 
+# Copy WASM files to website directory
+cp pkg/wasm.js pkg/wasm_bg.wasm ../website/
+
 # Serve the web version locally
 cd ../website
 python3 -m http.server 8000
