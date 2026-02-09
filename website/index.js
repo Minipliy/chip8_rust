@@ -16,8 +16,7 @@ ctx.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE)
 
 const fileInput = document.getElementById("fileinput")
 const gameSelect = document.getElementById("gameselect")
-
-const descriptionBox = document.getElementById("gamedescription");
+const descriptionBox = document.getElementById("gamedescription")
 
 const descriptions = {
     "c8games/15PUZZLE": `15 Puzzle:
@@ -104,24 +103,79 @@ V down`,
     "c8games/RPS.ch8": `Rock Paper Scissors:
 Keybinds are explained inside the game.
 (German keyboard: Z is the Y key)`
-};
+}
 
 gameSelect.addEventListener("change", () => {
-    const value = gameSelect.value;
+    const value = gameSelect.value
     descriptionBox.textContent =
-        descriptions[value] || "Select a game to see instructions.";
-});
+        descriptions[value] || "Select a game to see instructions."
+})
+
+// Mobile keyboard mapping (CHIP-8 hex keys to keyboard keys)
+const keyMap = {
+    '1': '1', '2': '2', '3': '3', 'c': '4',
+    '4': 'q', '5': 'w', '6': 'e', 'd': 'r',
+    '7': 'a', '8': 's', '9': 'd', 'e': 'f',
+    'a': 'y', '0': 'x', 'b': 'c', 'f': 'v'
+}
 
 async function run() {
     await init()
     let chip8 = new wasm.EmuWasm()
 
+    // Desktop keyboard events
     document.addEventListener("keydown", function(evt) {
         chip8.keypress(evt, true)
     })
 
     document.addEventListener("keyup", function(evt) {
         chip8.keypress(evt, false)
+    })
+
+    // Mobile touch keyboard
+    const mobileKeyboard = document.getElementById("mobile-keyboard")
+    const keyButtons = mobileKeyboard.querySelectorAll(".key-btn")
+
+    keyButtons.forEach(button => {
+        const hexKey = button.dataset.key
+        const mappedKey = keyMap[hexKey.toLowerCase()]
+
+        // Touch start (key down)
+        button.addEventListener("touchstart", (evt) => {
+            evt.preventDefault()
+            button.classList.add("pressed")
+            const fakeEvent = new KeyboardEvent("keydown", { key: mappedKey })
+            chip8.keypress(fakeEvent, true)
+        })
+
+        // Touch end (key up)
+        button.addEventListener("touchend", (evt) => {
+            evt.preventDefault()
+            button.classList.remove("pressed")
+            const fakeEvent = new KeyboardEvent("keyup", { key: mappedKey })
+            chip8.keypress(fakeEvent, false)
+        })
+
+        // Also support mouse clicks for testing on desktop
+        button.addEventListener("mousedown", (evt) => {
+            evt.preventDefault()
+            button.classList.add("pressed")
+            const fakeEvent = new KeyboardEvent("keydown", { key: mappedKey })
+            chip8.keypress(fakeEvent, true)
+        })
+
+        button.addEventListener("mouseup", (evt) => {
+            evt.preventDefault()
+            button.classList.remove("pressed")
+            const fakeEvent = new KeyboardEvent("keyup", { key: mappedKey })
+            chip8.keypress(fakeEvent, false)
+        })
+
+        button.addEventListener("mouseleave", (evt) => {
+            button.classList.remove("pressed")
+            const fakeEvent = new KeyboardEvent("keyup", { key: mappedKey })
+            chip8.keypress(fakeEvent, false)
+        })
     })
 
     // Handle dropdown selection
