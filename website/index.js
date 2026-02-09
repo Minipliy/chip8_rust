@@ -119,6 +119,7 @@ const keyMap = {
     'a': 'y', '0': 'x', 'b': 'c', 'f': 'v'
 }
 
+// Mobile touch keyboard - NO KEY MAPPING NEEDED, use keys directly
 async function run() {
     await init()
     let chip8 = new wasm.EmuWasm()
@@ -137,44 +138,37 @@ async function run() {
     const keyButtons = mobileKeyboard.querySelectorAll(".key-btn")
 
     keyButtons.forEach(button => {
-        const hexKey = button.dataset.key
-        const mappedKey = keyMap[hexKey.toLowerCase()]
+        const key = button.dataset.key
 
-        // Touch start (key down)
-        button.addEventListener("touchstart", (evt) => {
+        // Prevent default to stop any unwanted behavior
+        const handlePress = (evt) => {
             evt.preventDefault()
             button.classList.add("pressed")
-            const fakeEvent = new KeyboardEvent("keydown", { key: mappedKey })
+            const fakeEvent = new KeyboardEvent("keydown", { key: key })
             chip8.keypress(fakeEvent, true)
-        })
+        }
 
-        // Touch end (key up)
-        button.addEventListener("touchend", (evt) => {
+        const handleRelease = (evt) => {
             evt.preventDefault()
             button.classList.remove("pressed")
-            const fakeEvent = new KeyboardEvent("keyup", { key: mappedKey })
+            const fakeEvent = new KeyboardEvent("keyup", { key: key })
             chip8.keypress(fakeEvent, false)
-        })
+        }
 
-        // Also support mouse clicks for testing on desktop
-        button.addEventListener("mousedown", (evt) => {
-            evt.preventDefault()
-            button.classList.add("pressed")
-            const fakeEvent = new KeyboardEvent("keydown", { key: mappedKey })
-            chip8.keypress(fakeEvent, true)
-        })
+        // Touch events
+        button.addEventListener("touchstart", handlePress, { passive: false })
+        button.addEventListener("touchend", handleRelease, { passive: false })
+        button.addEventListener("touchcancel", handleRelease, { passive: false })
 
-        button.addEventListener("mouseup", (evt) => {
-            evt.preventDefault()
-            button.classList.remove("pressed")
-            const fakeEvent = new KeyboardEvent("keyup", { key: mappedKey })
-            chip8.keypress(fakeEvent, false)
-        })
+        // Mouse events (for desktop testing)
+        button.addEventListener("mousedown", handlePress)
+        button.addEventListener("mouseup", handleRelease)
 
+        // Handle mouse leaving button while pressed
         button.addEventListener("mouseleave", (evt) => {
-            button.classList.remove("pressed")
-            const fakeEvent = new KeyboardEvent("keyup", { key: mappedKey })
-            chip8.keypress(fakeEvent, false)
+            if (button.classList.contains("pressed")) {
+                handleRelease(evt)
+            }
         })
     })
 
@@ -231,6 +225,7 @@ async function run() {
         fr.readAsArrayBuffer(file)
     }, false)
 }
+
 
 function mainloop(chip8) {
     for (let i = 0; i < TICKS_PER_FRAME; i++) {
