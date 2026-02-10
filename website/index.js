@@ -136,42 +136,37 @@ async function run() {
 
     // Mobile touch keyboard
     const mobileKeyboard = document.getElementById("mobile-keyboard")
-    const keyButtons = mobileKeyboard.querySelectorAll(".key-btn")
+    // Mobile touch keyboard logic
+    const keyButtons = document.querySelectorAll(".key-btn");
 
     keyButtons.forEach(button => {
-        const key = button.dataset.key
+        const key = button.dataset.key;
 
-        // Prevent default to stop any unwanted behavior
         const handlePress = (evt) => {
-            evt.preventDefault()
-            button.classList.add("pressed")
-            const fakeEvent = new KeyboardEvent("keydown", { key: key })
-            chip8.keypress(fakeEvent, true)
-        }
+            evt.preventDefault();
+            button.classList.add("pressed");
+            // Important: Use the key from the dataset
+            const fakeEvent = new KeyboardEvent("keydown", { key: key });
+            chip8.keypress(fakeEvent, true);
+        };
 
         const handleRelease = (evt) => {
-            evt.preventDefault()
-            button.classList.remove("pressed")
-            const fakeEvent = new KeyboardEvent("keyup", { key: key })
-            chip8.keypress(fakeEvent, false)
-        }
+            evt.preventDefault();
+            button.classList.remove("pressed");
+            const fakeEvent = new KeyboardEvent("keyup", { key: key });
+            chip8.keypress(fakeEvent, false);
+        };
 
-        // Touch events
-        button.addEventListener("touchstart", handlePress, { passive: false })
-        button.addEventListener("touchend", handleRelease, { passive: false })
-        button.addEventListener("touchcancel", handleRelease, { passive: false })
+        // Touch Events for Mobile
+        button.addEventListener("touchstart", handlePress, { passive: false });
+        button.addEventListener("touchend", handleRelease, { passive: false });
+        button.addEventListener("touchcancel", handleRelease, { passive: false });
 
-        // Mouse events (for desktop testing)
-        button.addEventListener("mousedown", handlePress)
-        button.addEventListener("mouseup", handleRelease)
-
-        // Handle mouse leaving button while pressed
-        button.addEventListener("mouseleave", (evt) => {
-            if (button.classList.contains("pressed")) {
-                handleRelease(evt)
-            }
-        })
-    })
+        // Mouse Events for Desktop Testing
+        button.addEventListener("mousedown", handlePress);
+        button.addEventListener("mouseup", handleRelease);
+        button.addEventListener("mouseleave", handleRelease);
+    });
 
     // Handle dropdown selection
     gameSelect.addEventListener("change", async function(evt) {
@@ -212,6 +207,8 @@ async function run() {
             return
         }
 
+        descriptionBox.textContent = "No description available for uploaded files."
+
         // Reset the dropdown
         gameSelect.value = ""
 
@@ -240,9 +237,41 @@ function mainloop(chip8) {
     ctx.fillStyle = "white"
     chip8.draw_screen(SCALE)
 
+    updateDebugger(chip8)
+
     anim_frame = window.requestAnimationFrame(() => {
         mainloop(chip8)
     })
 }
+
+const regContainer = document.getElementById("dbg-registers");
+
+for (let i = 0; i < 16; i++) {
+    const div = document.createElement("div");
+    div.innerHTML = `V${i.toString(16).toUpperCase()}:
+ <span id="reg${i}">00</span>`;
+    regContainer.appendChild(div);
+}
+
+function updateDebugger(chip8) {
+    document.getElementById("dbg-pc").textContent =
+        chip8.dbg_pc().toString(16).padStart(3, "0");
+
+    document.getElementById("dbg-i").textContent =
+        chip8.dbg_i().toString(16).padStart(3, "0");
+
+    document.getElementById("dbg-sp").textContent =
+        chip8.dbg_sp();
+
+    const regs = chip8.dbg_registers(); // <- get array from WASM
+    regs.forEach((val, i) => {
+        document.getElementById(`reg${i}`).textContent =
+            val.toString(16).padStart(2, "0");
+    });
+
+    document.getElementById("dbg-stack").innerHTML =
+        chip8.dbg_stack().map(v => v.toString(16)).join("<br>");
+}
+
 
 run().catch(console.error)
