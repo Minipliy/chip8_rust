@@ -448,6 +448,24 @@ article.active {
     margin-top: 8px;
 }
 
+.sound-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: var(--fs-6);
+}
+
+.sound-toggle-label input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+    accent-color: var(--orange-yellow-crayola);
+}
+
+.sound-toggle-label span {
+    color: var(--white-2);
+}
+
 input[type=file]::file-selector-button {
     background: var(--jet);
     color: var(--white-2);

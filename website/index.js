@@ -18,6 +18,83 @@ const fileInput = document.getElementById("fileinput")
 const gameSelect = document.getElementById("gameselect")
 const descriptionBox = document.getElementById("gamedescription")
 
+// ===== SOUND CLASS =====
+class Chip8Sound {
+    constructor() {
+        this.audioContext = null;
+        this.oscillator = null;
+        this.gainNode = null;
+        this.isPlaying = false;
+        this.enabled = true;
+    }
+
+    init() {
+        if (this.audioContext) return;
+
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.gainNode = this.audioContext.createGain();
+            this.gainNode.connect(this.audioContext.destination);
+            this.gainNode.gain.value = 0.1; // 10% volume
+        } catch (e) {
+            console.error("Failed to initialize audio:", e);
+            this.enabled = false;
+        }
+    }
+
+    setEnabled(enabled) {
+        this.enabled = enabled;
+        if (!enabled) {
+            this.stop();
+        }
+    }
+
+    play() {
+        if (!this.enabled) return;
+        if (!this.audioContext) this.init();
+        if (!this.audioContext) return;
+
+        if (!this.isPlaying) {
+            try {
+                this.oscillator = this.audioContext.createOscillator();
+                this.oscillator.type = 'square';
+                this.oscillator.frequency.value = 440;
+                this.oscillator.connect(this.gainNode);
+                this.oscillator.start();
+                this.isPlaying = true;
+            } catch (e) {
+                console.error("Failed to play sound:", e);
+            }
+        }
+    }
+
+    stop() {
+        if (this.isPlaying && this.oscillator) {
+            try {
+                this.oscillator.stop();
+                this.oscillator.disconnect();
+            } catch (e) {
+                // Oscillator already stopped
+            }
+            this.oscillator = null;
+            this.isPlaying = false;
+        }
+    }
+
+    update(soundTimer) {
+        if (soundTimer > 0 && this.enabled) {
+            this.play();
+        } else {
+            this.stop();
+        }
+    }
+}
+
+// Initialize sound
+const sound = new Chip8Sound()
+let soundEnabled = true
+let audioInitialized = false
+
 const descriptions = {
     "c8games/15PUZZLE": `15 Puzzle:
 Organize the letters in the CHIP-8 keyboard layout.
@@ -112,21 +189,23 @@ gameSelect.addEventListener("change", () => {
         descriptions[value] || "Select a game to see instructions."
 })
 
-// Mobile keyboard mapping (CHIP-8 hex keys to keyboard keys)
-const keyMap = {
-    '1': '1', '2': '2', '3': '3', 'c': '4',
-    '4': 'q', '5': 'w', '6': 'e', 'd': 'r',
-    '7': 'a', '8': 's', '9': 'd', 'e': 'f',
-    'a': 'y', '0': 'x', 'b': 'c', 'f': 'v'
+// Initialize audio on first user interaction
+function initAudio() {
+    if (!audioInitialized && soundEnabled) {
+        sound.init()
+        audioInitialized = true
+        console.log("Audio initialized")
+    }
 }
 
-// Mobile touch keyboard - NO KEY MAPPING NEEDED, use keys directly
+// Mobile touch keyboard
 async function run() {
     await init()
     let chip8 = new wasm.EmuWasm()
 
     // Desktop keyboard events
     document.addEventListener("keydown", function(evt) {
+        initAudio()
         chip8.keypress(evt, true)
     })
 
@@ -134,8 +213,6 @@ async function run() {
         chip8.keypress(evt, false)
     })
 
-    // Mobile touch keyboard
-    const mobileKeyboard = document.getElementById("mobile-keyboard")
     // Mobile touch keyboard logic
     const keyButtons = document.querySelectorAll(".key-btn");
 
@@ -144,8 +221,8 @@ async function run() {
 
         const handlePress = (evt) => {
             evt.preventDefault();
+            initAudio()
             button.classList.add("pressed");
-            // Important: Use the key from the dataset
             const fakeEvent = new KeyboardEvent("keydown", { key: key });
             chip8.keypress(fakeEvent, true);
         };
@@ -168,9 +245,20 @@ async function run() {
         button.addEventListener("mouseleave", handleRelease);
     });
 
+    // Sound toggle (optional - only if you add the checkbox)
+    const soundToggle = document.getElementById("sound-toggle")
+    if (soundToggle) {
+        soundToggle.addEventListener("change", (evt) => {
+            soundEnabled = evt.target.checked
+            sound.setEnabled(soundEnabled)
+        })
+    }
+
     // Handle dropdown selection
     gameSelect.addEventListener("change", async function(evt) {
         if (!evt.target.value) return
+
+        initAudio()
 
         // Stop previous game
         if (anim_frame != 0) {
@@ -196,6 +284,8 @@ async function run() {
 
     // Handle file upload
     fileInput.addEventListener("change", function(evt) {
+        initAudio()
+
         // Stop previous game
         if (anim_frame != 0) {
             window.cancelAnimationFrame(anim_frame)
@@ -231,6 +321,10 @@ function mainloop(chip8) {
     }
     chip8.tick_timers()
 
+    // Update sound based on sound timer
+    const soundTimer = chip8.get_sound_timer()
+    sound.update(soundTimer)
+
     ctx.fillStyle = "black"
     ctx.fillRect(0, 0, WIDTH * SCALE, HEIGHT * SCALE)
 
@@ -263,7 +357,7 @@ function updateDebugger(chip8) {
     document.getElementById("dbg-sp").textContent =
         chip8.dbg_sp();
 
-    const regs = chip8.dbg_registers(); // <- get array from WASM
+    const regs = chip8.dbg_registers();
     regs.forEach((val, i) => {
         document.getElementById(`reg${i}`).textContent =
             val.toString(16).padStart(2, "0");

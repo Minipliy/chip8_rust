@@ -77,24 +77,29 @@ impl EmuWasm {
         }
     }
 
+    #[wasm_bindgen]
+    pub fn get_sound_timer(&self) -> u8 {
+        *self.chip8.get_st()
+    }
+
     pub fn dbg_pc(&self) -> u16 {
-        self.chip8.pc
+        *self.chip8.get_pc()
     }
 
     pub fn dbg_i(&self) -> u16 {
-        self.chip8.i_reg
+        *self.chip8.get_i_reg()
     }
 
     pub fn dbg_sp(&self) -> u16 {
-        self.chip8.sp
+        *self.chip8.get_sp()
     }
 
     pub fn dbg_registers(&self) -> Vec<u8> {
-        self.chip8.v_reg.to_vec()
+        self.chip8.get_v_reg().to_vec()
     }
 
     pub fn dbg_stack(&self) -> Vec<u16> {
-        self.chip8.stack.to_vec()
+        self.chip8.get_stack().to_vec()
     }
 }
 

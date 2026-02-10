@@ -32,13 +32,13 @@ const FONTSET: [u8; FONTSET_SIZE] = [
 ];
 
 pub struct Emu {
-    pub pc: u16,
+    pc: u16,
     ram: [u8; RAM_SIZE],
     screen: [bool; SCREEN_WIDTH * SCREEN_HEIGHT],
-    pub v_reg: [u8; NUM_REGS],
-    pub i_reg: u16,
-    pub sp: u16,
-    pub stack: [u16; STACK_SIZE],
+    v_reg: [u8; NUM_REGS],
+    i_reg: u16,
+    sp: u16,
+    stack: [u16; STACK_SIZE],
     keys: [bool; NUM_KEYS],
     dt: u8,
     st: u8,
@@ -67,6 +67,30 @@ impl Emu {
 
     pub fn get_display(&self) -> &[bool] {
         &self.screen
+    }
+
+    pub fn get_st(&self) -> &u8 {
+        &self.st
+    }
+
+    pub fn get_pc(&self) -> &u16 {
+        &self.pc
+    }
+
+    pub fn get_i_reg(&self) -> &u16 {
+        &self.i_reg
+    }
+
+    pub fn get_sp(&self) -> &u16 {
+        &self.sp
+    }
+
+    pub fn get_v_reg(&self) -> &[u8; 16] {
+        &self.v_reg
+    }
+
+    pub fn get_stack(&self) -> &[u16; 16] {
+        &self.stack
     }
 
     pub fn keypresses(&mut self, idx: usize, pressed: bool) {
