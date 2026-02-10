@@ -287,6 +287,7 @@ article {
     font-style: normal;
 }
 
+
 .social-list {
     display: flex;
     justify-content: flex-start;
@@ -301,10 +302,33 @@ article {
     font-size: 18px;
 }
 
+.social-item .social-link:hover {
+    color: var(--light-gray);
+}
+
+/* For regular img icons (Bluesky, Dev.to) */
 .social-item .social-link img {
     width: 18px;
     height: 18px;
+    opacity: 0.7;
+    transition: var(--transition-1);
 }
+
+.social-item .social-link:hover img {
+    opacity: 1;
+}
+
+/* For inline SVG (GitHub rainbow) */
+.social-item .social-link svg {
+    width: 18px;
+    height: 18px;
+    transition: var(--transition-1);
+}
+
+.social-item .social-link:hover svg {
+    opacity: 0.9;
+}
+
 
 /* ===== ARTICLE STYLES ===== */
 article {
