@@ -76,6 +76,26 @@ impl EmuWasm {
             }
         }
     }
+
+    pub fn dbg_pc(&self) -> u16 {
+        self.chip8.pc
+    }
+
+    pub fn dbg_i(&self) -> u16 {
+        self.chip8.i_reg
+    }
+
+    pub fn dbg_sp(&self) -> u16 {
+        self.chip8.sp
+    }
+
+    pub fn dbg_registers(&self) -> Vec<u8> {
+        self.chip8.v_reg.to_vec()
+    }
+
+    pub fn dbg_stack(&self) -> Vec<u16> {
+        self.chip8.stack.to_vec()
+    }
 }
 
 fn key_to_button(key: &str) -> Option<usize> {

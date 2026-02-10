@@ -32,13 +32,13 @@ const FONTSET: [u8; FONTSET_SIZE] = [
 ];
 
 pub struct Emu {
-    pc: u16,
+    pub pc: u16,
     ram: [u8; RAM_SIZE],
     screen: [bool; SCREEN_WIDTH * SCREEN_HEIGHT],
-    v_reg: [u8; NUM_REGS],
-    i_reg: u16,
-    sp: u16,
-    stack: [u16; STACK_SIZE],
+    pub v_reg: [u8; NUM_REGS],
+    pub i_reg: u16,
+    pub sp: u16,
+    pub stack: [u16; STACK_SIZE],
     keys: [bool; NUM_KEYS],
     dt: u8,
     st: u8,
