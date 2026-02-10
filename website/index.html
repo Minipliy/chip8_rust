@@ -5,42 +5,213 @@
     <title>Chip-8 Emulator</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+
+            /**
+   * colors
+   */
+
+            --light-gray: #ddd;
+            --eerie-black-2: #111;
+
+            /* gradient */
+
+            --bg-gradient-onyx: linear-gradient(to bottom right,
+                    hsl(240, 1%, 25%) 3%,
+                    hsl(0, 0%, 19%) 97%);
+            --bg-gradient-jet: linear-gradient(to bottom right,
+                    hsla(240, 1%, 18%, 0.251) 0%,
+                    hsla(240, 2%, 11%, 0) 100%), hsl(240, 2%, 13%);
+            --bg-gradient-yellow-1: linear-gradient(to bottom right,
+                    hsl(45, 100%, 71%) 0%,
+                    hsla(36, 100%, 69%, 0) 50%);
+            --bg-gradient-yellow-2: linear-gradient(135deg,
+                    hsla(45, 100%, 71%, 0.251) 0%,
+                    hsla(35, 100%, 68%, 0) 59.86%), hsl(240, 2%, 13%);
+            --border-gradient-onyx: linear-gradient(to bottom right,
+                    hsl(0, 0%, 25%) 0%,
+                    hsla(0, 0%, 25%, 0) 50%);
+            --text-gradient-yellow: linear-gradient(to right,
+                    hsl(45, 100%, 72%),
+                    hsl(35, 100%, 68%));
+
+            /* solid */
+
+            --jet: hsl(0, 0%, 22%);
+            --onyx: hsl(240, 1%, 17%);
+            --eerie-black-1: hsl(240, 2%, 13%);
+            --eerie-black-2: hsl(240, 2%, 12%);
+            --smoky-black: hsl(0, 0%, 7%);
+            --white-1: hsl(0, 0%, 100%);
+            --white-2: hsl(0, 0%, 98%);
+            --orange-yellow-crayola: hsl(45, 100%, 72%);
+            --vegas-gold: hsl(45, 54%, 58%);
+            --light-gray: hsl(0, 0%, 84%);
+            --light-gray-70: hsla(0, 0%, 84%, 0.7);
+            --bittersweet-shimmer: hsl(0, 43%, 51%);
+
+            /**
+   * typography
+   */
+
+            /* font-family */
+            --ff-poppins: 'Poppins', sans-serif;
+
+            /* font-size */
+            --fs-1: 24px;
+            --fs-2: 18px;
+            --fs-3: 17px;
+            --fs-4: 16px;
+            --fs-5: 15px;
+            --fs-6: 14px;
+            --fs-7: 13px;
+            --fs-8: 11px;
+
+            /* font-weight */
+            --fw-300: 300;
+            --fw-400: 400;
+            --fw-500: 500;
+            --fw-600: 600;
+
+            /**
+   * shadow
+   */
+
+            --shadow-1: -4px 8px 24px hsla(0, 0%, 0%, 0.25);
+            --shadow-2: 0 16px 30px hsla(0, 0%, 0%, 0.25);
+            --shadow-3: 0 16px 40px hsla(0, 0%, 0%, 0.25);
+            --shadow-4: 0 25px 50px hsla(0, 0%, 0%, 0.15);
+            --shadow-5: 0 24px 80px hsla(0, 0%, 0%, 0.25);
+
+            /**
+   * transition
+   */
+
+            --transition-1: 0.25s ease;
+            --transition-2: 0.5s ease-in-out;
+
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            width: 90%;
             max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
-            background: #1a1a1a;
+            padding: 60px;
+            background: var(--smoky-black);
             color: #fff;
+        }
+
+        article {
+            display: block;
+            animation: fade 0.5s ease backwards;
+            background: var(--eerie-black-2);
+            border: 1px solid var(--jet);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: var(--shadow-1);
+            z-index: 1;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         h1 {
             text-align: center;
+            color: var(--white-2);
+            font-size: 34px;
         }
 
+        /* Game Controls Styling */
         .controls {
             margin: 20px 0;
-            display: flex;
+            display: grid;
             gap: 20px;
-            flex-wrap: wrap;
-            align-items: center;
+            grid-template-columns: 1fr 1fr 2fr;
+        }
+
+        .control-card {
+            background: var(--border-gradient-onyx);
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: var(--shadow-2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .control-card::before {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            background: var(--bg-gradient-jet);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        .control-card label {
+            color: var(--white-2);
+            font-size: var(--fs-6);
+            font-weight: var(--fw-500);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .control-card select,
+        .control-card input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--jet);
+            background: var(--eerie-black-1);
+            color: var(--white-2);
+            font-size: var(--fs-6);
+            transition: var(--transition-1);
+        }
+
+        .control-card select:focus,
+        .control-card input[type="file"]:focus {
+            border-color: var(--orange-yellow-crayola);
+            outline: none;
+        }
+
+        .control-card small {
+            display: block;
+            color: var(--light-gray-70);
+            font-size: var(--fs-8);
+            margin-top: 8px;
+        }
+
+        #gamedescription {
+            background: var(--eerie-black-1);
+            border: 1px solid var(--jet);
+            padding: 20px;
+            border-radius: 12px;
+            white-space: pre-line;
+            color: var(--light-gray);
+            font-size: var(--fs-7);
+            line-height: 1.6;
+            min-height: 100px;
         }
 
         select,
         input[type="file"] {
             padding: 8px;
             border-radius: 4px;
-            border: 1px solid #444;
+            border: 1px solid var(--jet);
+            box-shadow: var(--shadow-1);
             background: #2a2a2a;
             color: #fff;
         }
 
         canvas {
             display: block;
-            margin: 20px auto;
             background: #000;
             border: 2px solid #444;
+            box-shadow: var(--shadow-1);
+            max-width: 92%;
+            height: auto;
+            width: auto;
         }
 
         /* Mobile Keyboard Styles */
@@ -84,92 +255,119 @@
             background: #4a4a4a;
         }
 
+        /* Small desktop windows (between mobile and full size) */
+        @media (min-width: 769px) and (max-width: 1200px) {
+            canvas {
+                max-width: 100%;
+            }
+
+            body {
+                width: 95%;
+            }
+        }
+
+        /* Large desktop */
+        @media (min-width: 1201px) {
+            canvas {
+                max-width: 100%;
+            }
+        }
+
         /* Show keyboard on mobile */
         @media (max-width: 768px) {
             #mobile-keyboard {
                 display: block;
             }
 
+            .controls {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            #gamedescription {
+                grid-column: 1 / -1;
+                /* Span full width */
+            }
+
             canvas {
-                max-width: 100%;
-                height: auto;
+                max-width: 98%;
+                margin: 10px auto;
+            }
+
+            body {
+                width: 95%;
+                padding: 10px;
+            }
+
+            article {
+                padding: 10px;
             }
         }
     </style>
 </head>
 
 <body>
-    <h1>🎮 Chip-8 Emulator</h1>
+    <article>
+        <h1>Chip-8 Emulator</h1>
 
-    <div class="controls">
-        <div>
-            <label for="gameselect">Choose a game: </label>
-            <select id="gameselect">
-                <option value="">-- Select a game --</option>
-                <option value="c8games/15PUZZLE">15 Puzzle</option>
-                <option value="c8games/BRIX">Brix</option>
-                <option value="c8games/INVADERS">Space Invaders</option>
-                <option value="c8games/MERLIN">Merlin</option>
-                <option value="c8games/MISSILE">Missile</option>
-                <option value="c8games/PONG2">Pong</option>
-                <option value="c8games/TETRIS">Tetris</option>
-                <option value="c8games/TICTAC">Tic Tac Toe</option>
-                <option value="c8games/UFO">UFO</option>
-                <option value="c8games/VBRIX">VBrix</option>
-                <option value="c8games/VERS">Vers</option>
-                <option value="c8games/RPS.ch8">RPS</option>
-            </select>
+        <div class="controls">
+            <div class="control-card">
+                <label for="gameselect">Choose a game</label>
+                <select id="gameselect">
+                    <option value="">-- Select a game --</option>
+                    <option value="c8games/15PUZZLE">15 Puzzle</option>
+                    <option value="c8games/BRIX">Brix</option>
+                    <option value="c8games/INVADERS">Space Invaders</option>
+                    <option value="c8games/MERLIN">Merlin</option>
+                    <option value="c8games/MISSILE">Missile</option>
+                    <option value="c8games/PONG2">Pong</option>
+                    <option value="c8games/TETRIS">Tetris</option>
+                    <option value="c8games/TICTAC">Tic Tac Toe</option>
+                    <option value="c8games/UFO">UFO</option>
+                    <option value="c8games/VBRIX">VBrix</option>
+                    <option value="c8games/VERS">Vers</option>
+                    <option value="c8games/RPS.ch8">RPS</option>
+                </select>
+            </div>
+
+            <div class="control-card">
+                <label for="fileinput">Upload CHIP-8 ROM</label>
+                <input type="file" id="fileinput" accept=".ch8,.c8" autocomplete="off" />
+                <small>Supported formats: .ch8, .c8 (CHIP-8 binary ROM files)</small>
+            </div>
+
+            <div id="gamedescription">
+                Select a game to see instructions.
+            </div>
         </div>
 
-        <div id="gamedescription" style="
-            background:#222;
-            border:1px solid #444;
-            padding:15px;
-            border-radius:6px;
-            margin-top:10px;
-            white-space:pre-line;
-        ">
-            Select a game to see instructions.
+        <canvas id="canvas">If you see this message, then your browser doesn't support HTML5</canvas>
+
+        <!-- Mobile Touch Keyboard -->
+        <div id="mobile-keyboard">
+            <h3 style="text-align: center; margin-top: 0;">Touch Controls</h3>
+            <div class="keyboard-grid">
+                <button class="key-btn" data-key="1">1</button>
+                <button class="key-btn" data-key="2">2</button>
+                <button class="key-btn" data-key="3">3</button>
+                <button class="key-btn" data-key="4">4</button>
+
+                <button class="key-btn" data-key="q">Q</button>
+                <button class="key-btn" data-key="w">W</button>
+                <button class="key-btn" data-key="e">E</button>
+                <button class="key-btn" data-key="r">R</button>
+
+                <button class="key-btn" data-key="a">A</button>
+                <button class="key-btn" data-key="s">S</button>
+                <button class="key-btn" data-key="d">D</button>
+                <button class="key-btn" data-key="f">F</button>
+
+                <button class="key-btn" data-key="y">Y</button>
+                <button class="key-btn" data-key="x">X</button>
+                <button class="key-btn" data-key="c">C</button>
+                <button class="key-btn" data-key="v">V</button>
+            </div>
         </div>
-
-        <div>
-            <label for="fileinput">Upload CHIP-8 ROM: </label>
-            <input type="file" id="fileinput" accept=".ch8,.c8" autocomplete="off" />
-            <small style="display: block; color: #888; margin-top: 5px;">
-                Supported formats: .ch8, .c8 (CHIP-8 binary ROM files)
-            </small>
-        </div>
-    </div>
-
-    <canvas id="canvas">If you see this message, then your browser doesn't support HTML5</canvas>
-
-    <!-- Mobile Touch Keyboard -->
-    <!-- Mobile Touch Keyboard -->
-    <div id="mobile-keyboard">
-        <h3 style="text-align: center; margin-top: 0;">Touch Controls</h3>
-        <div class="keyboard-grid">
-            <button class="key-btn" data-key="1">1</button>
-            <button class="key-btn" data-key="2">2</button>
-            <button class="key-btn" data-key="3">3</button>
-            <button class="key-btn" data-key="4">4</button>
-
-            <button class="key-btn" data-key="q">Q</button>
-            <button class="key-btn" data-key="w">W</button>
-            <button class="key-btn" data-key="e">E</button>
-            <button class="key-btn" data-key="r">R</button>
-
-            <button class="key-btn" data-key="a">A</button>
-            <button class="key-btn" data-key="s">S</button>
-            <button class="key-btn" data-key="d">D</button>
-            <button class="key-btn" data-key="f">F</button>
-
-            <button class="key-btn" data-key="y">Y</button>
-            <button class="key-btn" data-key="x">X</button>
-            <button class="key-btn" data-key="c">C</button>
-            <button class="key-btn" data-key="v">V</button>
-        </div>
-    </div>
-
+    </article>
 </body>
 <script type="module" src="index.js"></script>
 
