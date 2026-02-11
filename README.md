@@ -1,4 +1,7 @@
-# CHIP-8 Emulator
+# CHIP-8 Rust Emulator
+
+![CI](https://github.com/Minipliy/chip8_rust/workflows/CI/badge.svg)
+
 
 A CHIP-8 emulator written in Rust with multiple frontends: desktop application using SDL2 and web version with WebAssembly for browser-based gameplay.
 
