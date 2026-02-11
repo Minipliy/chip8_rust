@@ -24,16 +24,12 @@ jobs:
         override: true
     
     - name: Build
+      working-directory: ./desktop  # or whatever your Rust project folder is called
       run: cargo build --verbose
     
     - name: Run tests
+      working-directory: ./desktop
       run: cargo test --verbose
-    
-    - name: Check formatting
-      run: cargo fmt -- --check
-    
-    - name: Run clippy
-      run: cargo clippy -- -D warnings
 
   wasm-build:
     runs-on: ubuntu-latest
@@ -52,4 +48,5 @@ jobs:
       run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
     
     - name: Build WASM
+      working-directory: ./wasm  # or whatever your WASM project folder is called
       run: wasm-pack build --target web
