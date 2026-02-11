@@ -10,11 +10,16 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build-desktop:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Install SDL2
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl2-dev
     
     - name: Install Rust
       uses: actions-rs/toolchain@v1
@@ -23,15 +28,15 @@ jobs:
         profile: minimal
         override: true
     
-    - name: Build
-      working-directory: ./desktop  # or whatever your Rust project folder is called
+    - name: Build Desktop
+      working-directory: ./desktop
       run: cargo build --verbose
     
     - name: Run tests
       working-directory: ./desktop
       run: cargo test --verbose
 
-  wasm-build:
+  build-wasm:
     runs-on: ubuntu-latest
     
     steps:
@@ -44,9 +49,12 @@ jobs:
         profile: minimal
         override: true
     
+    - name: Add wasm32 target
+      run: rustup target add wasm32-unknown-unknown
+    
     - name: Install wasm-pack
       run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
     
     - name: Build WASM
-      working-directory: ./wasm  # or whatever your WASM project folder is called
+      working-directory: ./wasm
       run: wasm-pack build --target web
