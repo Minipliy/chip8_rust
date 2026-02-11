@@ -291,6 +291,8 @@ async function run() {
 
         initAudio()
 
+        descriptionBox.textContent = descriptions[evt.target.value] || "No description available."
+
         // Stop previous game
         if (anim_frame != 0) {
             window.cancelAnimationFrame(anim_frame)
