@@ -1,3 +1,4 @@
+
 import init, * as wasm from "./wasm.js"
 
 const WIDTH = 64
