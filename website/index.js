@@ -1,3 +1,4 @@
+
 import init, * as wasm from "./wasm.js"
 
 const WIDTH = 64
@@ -28,17 +29,23 @@ class Chip8Sound {
         this.enabled = true;
     }
 
-    init() {
-        if (this.audioContext) return;
+    async init() { // Added async
+        if (!this.audioContext) {
+            try {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                this.gainNode = this.audioContext.createGain();
+                this.gainNode.connect(this.audioContext.destination);
+                this.gainNode.gain.value = 0.1;
+            } catch (e) {
+                console.error("Failed to initialize audio:", e);
+                this.enabled = false;
+                return;
+            }
+        }
 
-        try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            this.gainNode = this.audioContext.createGain();
-            this.gainNode.connect(this.audioContext.destination);
-            this.gainNode.gain.value = 0.1; // 10% volume
-        } catch (e) {
-            console.error("Failed to initialize audio:", e);
-            this.enabled = false;
+        // Every time init is called via an interaction, try to resume
+        if (this.audioContext.state === 'suspended') {
+            await this.audioContext.resume();
         }
     }
 
@@ -183,18 +190,34 @@ Keybinds are explained inside the game.
 (German keyboard: Z is the Y key)`
 }
 
-gameSelect.addEventListener("change", () => {
-    const value = gameSelect.value
-    descriptionBox.textContent =
-        descriptions[value] || "Select a game to see instructions."
-})
+gameSelect.addEventListener("change", async function(evt) {
+    if (!evt.target.value) return;
+
+    // Call this IMMEDIATELY before any 'await' calls
+    initAudio();
+
+    if (anim_frame != 0) {
+        window.cancelAnimationFrame(anim_frame);
+    }
+
+    // ... rest of your fetch logic
+});
 
 // Initialize audio on first user interaction
 function initAudio() {
-    if (!audioInitialized && soundEnabled) {
-        sound.init()
-        audioInitialized = true
-        console.log("Audio initialized")
+    if (soundEnabled) {
+        sound.init();
+        audioInitialized = true;
+
+        // Create and play a tiny buffer of silence to "unlock" the audio hardware
+        if (sound.audioContext && !audioInitialized) {
+            const buffer = sound.audioContext.createBuffer(1, 1, 22050);
+            const source = sound.audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(sound.audioContext.destination);
+            source.start(0);
+            audioInitialized = true;
+        }
     }
 }
 
@@ -212,6 +235,10 @@ async function run() {
     document.addEventListener("keyup", function(evt) {
         chip8.keypress(evt, false)
     })
+
+    document.addEventListener('touchstart', function() {
+        initAudio();
+    }, { once: true });
 
     // Mobile touch keyboard logic
     const keyButtons = document.querySelectorAll(".key-btn");
@@ -251,6 +278,10 @@ async function run() {
         soundToggle.addEventListener("change", (evt) => {
             soundEnabled = evt.target.checked
             sound.setEnabled(soundEnabled)
+            // FIX #1: Initialize audio on toggle interaction (helps mobile)
+            if (soundEnabled) {
+                initAudio()
+            }
         })
     }
 
@@ -297,6 +328,14 @@ async function run() {
             return
         }
 
+        // FIX #2: Validate file extension to prevent Rust aliasing error
+        const fileName = file.name.toLowerCase()
+        if (!fileName.endsWith('.ch8') && !fileName.endsWith('.c8')) {
+            alert("Invalid file type. Please upload a .ch8 or .c8 file.")
+            fileInput.value = '' // Clear input to prevent state pollution
+            return
+        }
+
         descriptionBox.textContent = "No description available for uploaded files."
 
         // Reset the dropdown
@@ -309,6 +348,8 @@ async function run() {
             chip8.reset()
             chip8.load_game(rom)
             mainloop(chip8)
+            // FIX #2: Clear file input after successful load
+            fileInput.value = ''
         }
         fr.readAsArrayBuffer(file)
     }, false)
